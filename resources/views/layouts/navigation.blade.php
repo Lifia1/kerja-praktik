@@ -1,12 +1,12 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-100 shadow-sm">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    <a href="{{ route('dashboard') }}" class="flex items-center space-x-2">
+                        <span class="text-xl font-bold tracking-wider text-indigo-600">SINTARA</span>
                     </a>
                 </div>
 
@@ -15,11 +15,40 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('surat-masuk.index')" :active="request()->routeIs('surat-masuk.*')">
+                        {{ __('Surat Masuk') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('surat-keluar.index')" :active="request()->routeIs('surat-keluar.*')">
+                        {{ __('Surat Keluar') }}
+                    </x-nav-link>
+
+                    @if(Auth::user()->isAdmin())
+                        <x-nav-link :href="route('boks.index')" :active="request()->routeIs('boks.*')">
+                            {{ __('Boks Fisik') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('bidang.index')" :active="request()->routeIs('bidang.*')">
+                            {{ __('Bidang') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                            {{ __('Operator') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
+                            {{ __('Laporan') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <span class="text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full font-semibold mr-3">
+                    {{ Auth::user()->role === 'admin' ? 'Admin' : (Auth::user()->bidang ? Auth::user()->bidang->nama_bidang : 'Operator') }}
+                </span>
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
@@ -45,7 +74,7 @@
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                                    {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -70,6 +99,32 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('surat-masuk.index')" :active="request()->routeIs('surat-masuk.*')">
+                {{ __('Surat Masuk') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('surat-keluar.index')" :active="request()->routeIs('surat-keluar.*')">
+                {{ __('Surat Keluar') }}
+            </x-responsive-nav-link>
+
+            @if(Auth::user()->isAdmin())
+                <x-responsive-nav-link :href="route('boks.index')" :active="request()->routeIs('boks.*')">
+                    {{ __('Boks Fisik') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('bidang.index')" :active="request()->routeIs('bidang.*')">
+                    {{ __('Bidang') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                    {{ __('Operator') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
+                    {{ __('Laporan') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

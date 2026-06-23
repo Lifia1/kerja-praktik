@@ -2,28 +2,41 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['nama_bidang'])]
 class Bidang extends Model
 {
     use HasFactory;
+
+    protected $table = 'bidang';
+
+    protected $fillable = [
+        'nama_bidang',
+        'kode_bidang',
+    ];
 
     /**
      * Get the users associated with the bidang.
      */
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class, 'bidang_id');
     }
 
     /**
-     * Get the archives associated with the bidang.
+     * Get the incoming mail associated with the bidang.
      */
-    public function archives()
+    public function suratMasuks()
     {
-        return $this->hasMany(Archive::class);
+        return $this->hasMany(SuratMasuk::class, 'bidang_id');
+    }
+
+    /**
+     * Get the outgoing mail associated with the bidang.
+     */
+    public function suratKeluars()
+    {
+        return $this->hasMany(SuratKeluar::class, 'bidang_id');
     }
 }

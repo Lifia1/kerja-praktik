@@ -2,20 +2,36 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role',
+        'bidang_id',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
     /**
      * Get the attributes that should be cast.
@@ -31,7 +47,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is an admin.
+     * Cek apakah user adalah Admin
      */
     public function isAdmin(): bool
     {
@@ -39,18 +55,34 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is a lecturer/staff.
+     * Cek apakah user adalah Operator Bidang
      */
-    public function isDosen(): bool
+    public function isOperator(): bool
     {
-        return $this->role === 'dosen';
+        return $this->role === 'operator';
     }
 
     /**
-     * Check if user is a student.
+     * Relasi ke Bidang (untuk Operator)
      */
-    public function isMahasiswa(): bool
+    public function bidang()
     {
-        return $this->role === 'mahasiswa';
+        return $this->belongsTo(Bidang::class, 'bidang_id');
+    }
+
+    /**
+     * Relasi ke surat masuk yang diinput
+     */
+    public function suratMasuks()
+    {
+        return $this->hasMany(SuratMasuk::class, 'user_id');
+    }
+
+    /**
+     * Relasi ke surat keluar yang diinput
+     */
+    public function suratKeluars()
+    {
+        return $this->hasMany(SuratKeluar::class, 'user_id');
     }
 }

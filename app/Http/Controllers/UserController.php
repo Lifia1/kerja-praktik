@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Bidang;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Hash;
@@ -14,7 +15,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $query = User::query();
+        $query = User::with('bidang');
 
         // Search functionality
         if ($request->has('search') && $request->search != '') {
@@ -40,7 +41,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        $bidangs = Bidang::orderBy('nama_bidang')->get();
+        return view('users.create', compact('bidangs'));
     }
 
     /**
@@ -52,7 +54,8 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', 'in:admin,dosen,mahasiswa'],
+            'role' => ['required', 'string', 'in:admin,operator'],
+            'bidang_id' => ['required_if:role,operator', 'nullable', 'exists:bidang,id'],
         ]);
 
         User::create([
@@ -60,6 +63,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'bidang_id' => $request->role === 'operator' ? $request->bidang_id : null,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
@@ -70,7 +74,8 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        $bidangs = Bidang::orderBy('nama_bidang')->get();
+        return view('users.edit', compact('user', 'bidangs'));
     }
 
     /**
@@ -81,7 +86,8 @@ class UserController extends Controller
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,'.$user->id],
-            'role' => ['required', 'string', 'in:admin,dosen,mahasiswa'],
+            'role' => ['required', 'string', 'in:admin,operator'],
+            'bidang_id' => ['required_if:role,operator', 'nullable', 'exists:bidang,id'],
         ];
 
         // Password is optional on update
@@ -94,6 +100,7 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->role = $request->role;
+        $user->bidang_id = $request->role === 'operator' ? $request->bidang_id : null;
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
