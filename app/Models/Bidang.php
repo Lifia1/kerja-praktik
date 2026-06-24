@@ -17,7 +17,7 @@ class Bidang extends Model
     ];
 
     /**
-     * Get the users associated with the bidang.
+     * Relasi ke users yang berasosiasi dengan bidang ini.
      */
     public function users()
     {
@@ -25,18 +25,10 @@ class Bidang extends Model
     }
 
     /**
-     * Get the incoming mail associated with the bidang.
+     * Relasi ke arsip yang dimiliki bidang ini.
      */
-    public function suratMasuks()
+    public function arsips()
     {
-        return $this->hasMany(SuratMasuk::class, 'bidang_id');
-    }
-
-    /**
-     * Get the outgoing mail associated with the bidang.
-     */
-    public function suratKeluars()
-    {
-        return $this->hasMany(SuratKeluar::class, 'bidang_id');
+        return $this->hasMany(Arsip::class, 'bidang_id');
     }
 }

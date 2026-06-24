@@ -10,11 +10,6 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -23,31 +18,21 @@ class User extends Authenticatable
         'bidang_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
 
     /**
-     * Cek apakah user adalah Admin
+     * Cek apakah user adalah Admin.
      */
     public function isAdmin(): bool
     {
@@ -55,7 +40,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Cek apakah user adalah Operator Bidang
+     * Cek apakah user adalah Operator Bidang.
      */
     public function isOperator(): bool
     {
@@ -63,7 +48,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Relasi ke Bidang (untuk Operator)
+     * Relasi ke Bidang (untuk Operator).
      */
     public function bidang()
     {
@@ -71,18 +56,10 @@ class User extends Authenticatable
     }
 
     /**
-     * Relasi ke surat masuk yang diinput
+     * Relasi ke arsip yang diinput oleh user ini.
      */
-    public function suratMasuks()
+    public function arsips()
     {
-        return $this->hasMany(SuratMasuk::class, 'user_id');
-    }
-
-    /**
-     * Relasi ke surat keluar yang diinput
-     */
-    public function suratKeluars()
-    {
-        return $this->hasMany(SuratKeluar::class, 'user_id');
+        return $this->hasMany(Arsip::class, 'user_id');
     }
 }
